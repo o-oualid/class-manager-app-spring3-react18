@@ -2,8 +2,9 @@
 
   .title {
     color: #282c34;
-    font-size: 30px;
-    font-weight: 800;
+    font-size: 25px;
+    font-weight: 600;
+    height: 40px;
   }
 
   .horizontal-scroll-tags {
@@ -11,7 +12,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background: #e8cae8;
+    background: azure;
   }
 
   .main-section {
@@ -19,7 +20,6 @@
     align-items: center;
     justify-content: center;
     height: 60vh;
-    background: #eddfef;
 
     .left-block {
       display: flex;
@@ -27,12 +27,14 @@
       justify-content: flex-start;
       text-align: left;
       flex-direction: column;
-      background: antiquewhite;
       height: 100%;
       width: 100%;
 
       .headline {
-
+        font-size: 33px;
+        span {
+          color: #61dafb;
+        }
       }
       .sub-headline {
         margin: 0 3em;
@@ -50,8 +52,12 @@
     .right-block {
       background: aquamarine;
       height: 100%;
-      width: 100%;
+      width: fit-content;
 
+      img {
+        height: 100%;
+
+      }
     }
   }
 }

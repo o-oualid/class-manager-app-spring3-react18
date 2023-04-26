@@ -4,22 +4,51 @@
   background: white;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 
   .logo {
     margin-left: 1em;
     font-size: 22px;
     font-weight: 800;
+
+    a {
+      text-decoration: none;
+      color: #282c34;
+    }
   }
 
   .navlinks {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    font-size: 18px;
+    font-weight: 500;
     background: #61dafb;
     height: 100%;
     width: 50%;
     text-decoration: none;
     list-style: none;
+
+    :hover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background: white;
+    }
+
+    a {
+      color: #282c34;
+      text-decoration: none;
+      padding: 0 2em;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    :hover {
+      cursor: pointer;
+    }
   }
 }
