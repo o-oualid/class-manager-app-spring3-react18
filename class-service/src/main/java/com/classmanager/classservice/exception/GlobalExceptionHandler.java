@@ -4,13 +4,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+
 
 
 import java.sql.SQLException;
@@ -31,9 +30,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
-    public ResponseEntity<Map<String, List<String>>> handleNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<ApiError> handleNotFoundException(UserNotFoundException ex) {
         List<String> errors = Collections.singletonList(ex.getMessage());
-        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
+        ApiError userNotFoundError = new ApiError(errors, HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(userNotFoundError, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DuplicateKeyException.class)

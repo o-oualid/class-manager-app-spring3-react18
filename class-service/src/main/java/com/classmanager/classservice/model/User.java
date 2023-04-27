@@ -3,6 +3,7 @@ package com.classmanager.classservice.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
+@AllArgsConstructor()
 @NoArgsConstructor
 @Entity(name = "users")
 public class User {
@@ -57,15 +59,4 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     private List<UserClassroom> userClassrooms;
 
-
-    public User(String firstName, String lastName, String handle, String email, String password, UserRole role, String backgroundPicture) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.handle = handle;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.createdAt = new Date(System.currentTimeMillis());
-        this.backgroundPicture = backgroundPicture;
-    }
 }

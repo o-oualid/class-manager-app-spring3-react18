@@ -1,12 +1,10 @@
 package com.classmanager.classservice.controller;
 
+import com.classmanager.classservice.DTO.RegisterUserDTO;
 import com.classmanager.classservice.DTO.UserDTO;
 import com.classmanager.classservice.exception.ApiError;
 import com.classmanager.classservice.exception.DuplicateKeyException;
-import com.classmanager.classservice.exception.UncaughtException;
-import com.classmanager.classservice.model.User;
 import com.classmanager.classservice.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +19,16 @@ public class UserController {
     }
 
     @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO requestUser) throws ApiError {
+    ResponseEntity<RegisterUserDTO> createUser(@Valid @RequestBody RegisterUserDTO requestUser) throws ApiError {
         if (userService.existsByEmail(requestUser.email())) {
             throw new DuplicateKeyException("Email");
         }
         return ResponseEntity.ok().body(userService.createUser(requestUser));
     }
 
-
-
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> findById(@PathVariable("id") String id) {
-        return ResponseEntity.ofNullable(userService.findById(id));
+    public ResponseEntity<UserDTO> findById(@PathVariable("id") String id) {
+        UserDTO retrievedUser = userService.findById(id);
+        return ResponseEntity.ok(retrievedUser);
     }
 }
