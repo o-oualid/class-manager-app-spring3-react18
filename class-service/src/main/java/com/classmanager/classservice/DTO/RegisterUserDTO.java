@@ -4,31 +4,33 @@ import com.classmanager.classservice.model.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-
-public record RegisterUserDTO(
+@Data
+public class RegisterUserDTO {
         @NotBlank(message = "first name is required")
-        @Size(max=45,min=2,message="First name Out-of-bounds")
-        String firstName,
+        @Size(max = 45, min = 2, message = "First name Out-of-bounds")
+        private String firstName;
 
         @NotBlank(message = "Last name is required")
-        @Size(max=45,min=2,message="last name Out-of-bounds")
-        String lastName,
+        @Size(max = 45, min = 2, message = "last name Out-of-bounds")
+        private String lastName;
 
-        String handle,
+        private String handle;
 
         @Email(message = "email should be valid")
-        @Size(max=100,min=2,message="email Out-of-bounds")
-        String email,
+        @Size(max = 100, min = 2, message = "email Out-of-bounds")
+        private String email;
 
+        @NotNull
         @Enumerated(EnumType.ORDINAL)
-        UserRole role,
+        private UserRole role;
 
         @NotBlank(message = "password is required")
-        String password,
+        private String password;
 
         @Column(length = 100)
-        String backgroundPicture
-) {
+        private String backgroundPicture;
 }

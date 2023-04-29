@@ -3,21 +3,24 @@ package com.classmanager.classservice.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@EnableWebMvc
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
@@ -28,9 +31,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(notValidError, new HttpHeaders(), ex.getStatusCode());
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseBody
-    public ResponseEntity<ApiError> handleNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<ApiError> handleNotFoundException(NotFoundException ex) {
         List<String> errors = Collections.singletonList(ex.getMessage());
         ApiError userNotFoundError = new ApiError(errors, HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(userNotFoundError, new HttpHeaders(), HttpStatus.NOT_FOUND);
@@ -43,19 +46,30 @@ public class GlobalExceptionHandler {
         DuplicateKeyException duplicateKeyException = new DuplicateKeyException(errors);
         return new ResponseEntity<>(duplicateKeyException, new HttpHeaders(), HttpStatus.CONFLICT);
     }
+/*
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex) {
 
-    @ExceptionHandler({Exception.class, RuntimeException.class, SQLException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<UncaughtException> handleAllUncaughtException(
-            Exception exception){
-        UncaughtException uncaughtException = new UncaughtException(exception);
+    }
+
+ */
+
+    @ExceptionHandler({Exception.class, RuntimeException.class, SQLException.class, UncaughtException.class})
+    public ResponseEntity<UncaughtException> handleAllUncaughtException(Exception ex){
+        List<String> errors = getErrorsList(ex);
+        UncaughtException uncaughtException = new UncaughtException(errors);
         return new ResponseEntity<>(uncaughtException , new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private Map<String, List<String>> getErrorsMap(List<String> errors) {
-        Map<String, List<String>> errorResponse = new HashMap<>();
-        errorResponse.put("errors", errors);
-        return errorResponse;
+    private List<String> getErrorsList(Exception ex) {
+        if (ex instanceof BindException) {
+            List<ObjectError> objectErrors = ((BindException) ex).getAllErrors();
+            return objectErrors.stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+        }
+        return Collections.singletonList(ex.getMessage());
     }
 
 }

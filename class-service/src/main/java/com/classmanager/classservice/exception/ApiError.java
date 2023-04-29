@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ApiError extends RuntimeException {
+public class ApiError extends Exception {
     private boolean success = false;
     protected List<String> errors;
     private int status = HttpStatus.INTERNAL_SERVER_ERROR.value();

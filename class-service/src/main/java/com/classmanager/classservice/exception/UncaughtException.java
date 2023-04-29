@@ -9,8 +9,12 @@ import java.util.List;
 @Getter
 @Setter
 public class UncaughtException extends ApiError {
-    private Exception exception;
-    public UncaughtException(Exception exception) {
-        super(new ArrayList<>(List.of("An internal server error occurred while processing your request.")));
+    private String message = "An internal server error occurred while processing your request.";
+    public UncaughtException(String message) {
+        this.message = message;
+    }
+
+    public UncaughtException(List<String> errors) {
+        super(errors);
     }
 }

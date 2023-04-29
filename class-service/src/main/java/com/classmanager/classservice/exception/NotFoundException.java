@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserNotFoundException extends ApiError {
+public class NotFoundException extends ApiError {
     private String message;
 }
