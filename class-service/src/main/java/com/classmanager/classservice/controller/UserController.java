@@ -1,13 +1,11 @@
 package com.classmanager.classservice.controller;
 
-import com.classmanager.classservice.DTO.AuthenticationRequestDTO;
-import com.classmanager.classservice.DTO.AuthenticationResponseDTO;
-import com.classmanager.classservice.DTO.RegisterUserDTO;
-import com.classmanager.classservice.DTO.UserDTO;
+import com.classmanager.classservice.DTO.*;
 import com.classmanager.classservice.exception.ApiError;
 import com.classmanager.classservice.exception.NotFoundException;
 import com.classmanager.classservice.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/${api.version}/auth/user")
+@RequestMapping("/api/${api.version}/auth/")
 public class UserController {
 
 
@@ -23,6 +21,12 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<UserDTO> isLoggedIn(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws Exception {
+        UserDTO userDTO = userService.verifyToken(token).orElse(null);
+        return ResponseEntity.ok().body(userDTO);
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +41,10 @@ public class UserController {
         return ResponseEntity.ok().body(jwtToken.orElse(null));
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+
+
+
+    @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> findById(@PathVariable("id") String id) throws NotFoundException {
         UserDTO retrievedUser = userService.findById(id);
         return ResponseEntity.ok(retrievedUser);

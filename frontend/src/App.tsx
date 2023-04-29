@@ -1,12 +1,29 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {useEffect} from "react";
+import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom";
+import AuthProvider ,{ PrivateRoute } from "./contexts/auth";
+import Profile from "./pages/Profile";
+
 
 import './App.scss';
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 
-function App() : JSX.Element {
+// @ts-ignore
+function App(Component) : JSX.Element {
 
-  const router = createBrowserRouter([
+    // @ts-ignore
+    useEffect(() => {
+        if (Component.requireAuth) {
+            // @ts-ignore
+            console.log("required auth!!")
+            return redirect("/login")
+        }
+    }, [])
+
+  // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
+    const router = createBrowserRouter([
       {
           path: "/",
           element: <Home />
@@ -14,6 +31,11 @@ function App() : JSX.Element {
       {
           path: "/register",
           element: <Register />
+      },
+      {
+          path: "/profile",
+          //@ts-ignore
+          element: <Profile />
       }
     ])
 

@@ -1,9 +1,6 @@
 package com.classmanager.classservice.service;
 
-import com.classmanager.classservice.DTO.AuthenticationRequestDTO;
-import com.classmanager.classservice.DTO.AuthenticationResponseDTO;
-import com.classmanager.classservice.DTO.RegisterUserDTO;
-import com.classmanager.classservice.DTO.UserDTO;
+import com.classmanager.classservice.DTO.*;
 import com.classmanager.classservice.config.JwtService;
 import com.classmanager.classservice.exception.DuplicateKeyException;
 import com.classmanager.classservice.exception.UncaughtException;
@@ -60,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<AuthenticationResponseDTO> authenticateUser(AuthenticationRequestDTO authRequest) {
+    public Optional<AuthenticationResponseDTO> authenticateUser(AuthenticationRequestDTO authRequest) throws NotFoundException {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.email(),
@@ -88,5 +85,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByEmail(String Email) {
         return userRepository.existsByEmail(Email);
+    }
+
+
+    @Override
+    public Optional<UserDTO> verifyToken(String token) throws UncaughtException {
+        String jwt = token.substring(7);
+        String userEmail = jwtService.extractUsername(jwt);
+        User user =  userRepository.findByEmail(userEmail).orElseThrow(
+                    () -> new UncaughtException("invalid token credentials")
+            );
+        return Optional.of(modelMapper.map(user, UserDTO.class));
     }
 }
